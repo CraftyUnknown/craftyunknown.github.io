@@ -219,10 +219,10 @@ chess:{n:'Chess',min:2,max:2,tie:1,
   for(let y=0;y<8;y++)T(String(me?y+1:8-y),69,68+y*56,14,'#aaa');
   // side panels: captured pieces, pieces left, material lead
   const V={p:1,n:3,b:3,r:5,q:9},sum=l=>l.reduce((a,o)=>a+(V[o.toLowerCase()]||0),0),cp=s.cp||[[],[]],adv=sum(cp[me])-sum(cp[1-me]),left=w=>s.b.filter(v=>v&&(v<'a')==w).length;
-  const side=(x0,title,list,n,lead,turn)=>{T(title,x0+38,56,14,turn?'#fff':'#888');[...list].sort((a,b)=>(V[b.toLowerCase()]||0)-(V[a.toLowerCase()]||0)).forEach((o,k)=>pc(o,x0+12+(k%3)*20,92+(k/3|0)*26,22));
-   T('Pieces '+n,x0+38,400,13,'#aaa');if(lead>0)T('+'+lead,x0+38,430,22,'#7c7')};
-  side(0,'You took',cp[me],left(me==0),adv,s.t==me&&s.w==null);side(524,'Opp took',cp[1-me],left(me==1),-adv,s.t!=me&&s.w==null);
-  T(msg(s,me)+(me?' - you are black':' - you are white'),300,520,20);T('Move '+(s.mn||0),300,550,14,'#888')}},
+    const side=(x0,cx,title,list,n,lead,turn)=>{T(title,x0+cx,56,14,turn?'#fff':'#888');[...list].sort((a,b)=>(V[b.toLowerCase()]||0)-(V[a.toLowerCase()]||0)).forEach((o,k)=>pc(o,x0+12+(k%3)*20,92+(k/3|0)*26,22));
+   T('Pieces '+n,x0+cx,400,13,'#aaa');if(lead>0)T('+'+lead,x0+cx,430,22,'#7c7')};
+  side(0,29,'You took',cp[me],left(me==0),adv,s.t==me&&s.w==null);side(524,38,'Opp took',cp[1-me],left(me==1),-adv,s.t!=me&&s.w==null);
+    T(s.w==null?(s.t==me?'Your turn':"Opponent's turn")+(s.t?' (Black)':' (White)'):'Game over',300,520,20);T('Move '+(s.mn||0),300,550,14,'#888')}},
 
 cards:{n:'Crazy Cards',min:2,max:4,
  init:n=>{const s={h:Array.from({length:n},()=>Array.from({length:7},dr)),u:0,d:1,w:null,pk:0};do s.t=dr();while(s.t[0]=='k');s.c=s.t[0];s.pl=[[s.t,0,-1]];return s},
