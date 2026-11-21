@@ -192,7 +192,7 @@ tetris:{n:'Tetris',min:1,max:2,
  draw(s,me){s.p.forEach((q,i)=>{const ox=s.p.length<2?160:15+i*290;R(ox-2,18,284,564,'#444');R(ox,20,280,560,'#111');
   q.b.forEach((r,y)=>r.forEach((v,x)=>v&&R(ox+x*28+1,20+y*28+1,26,26,'#999')));
   if(!q.o)q.k.forEach(([a,d])=>R(ox+(q.x+a)*28+1,20+(q.y+d)*28+1,26,26,'#fff'));
-  T(q.sc+(i==me?' (you)':''),ox+140,592,16);if(q.o)T('GAME OVER',ox+140,300,30,'#e44')})}},
+  T(q.sc+(i==me?' (you)':''),ox+140,9,14);if(q.o)T('GAME OVER',ox+140,300,30,'#e44')});T('← → move   ↑ rotate   ↓ soft drop   Space hard drop',300,592,13,'#888')}},
 
 chess:{n:'Chess',min:2,max:2,tie:1,
  init:()=>({b:[...'rnbqkbnrpppppppp'].concat(Array(32).fill(''),[...'PPPPPPPPRNBQKBNR']),t:0,s:-1,w:null,l:null,cp:[[],[]]}),
