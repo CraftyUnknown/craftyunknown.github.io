@@ -399,7 +399,7 @@ hangman:{n:'Hangman',min:2,max:2,
   else if(!m.k&&m.d===1&&m.x!=null){const X=Math.floor((m.x*600-30)/60),Y=Math.floor((m.y*600-380)/60),i=Y*9+X;if(X>=0&&X<9&&Y>=0&&Y<3&&(m.x*600-30)%60<56&&i<26)l=String.fromCharCode(97+i)}
   if(!l||s.g.includes(l))return;s.g+=l;lg(s,p,'% guessed '+l.toUpperCase()+(s.wd.includes(l)?' - correct':' - wrong'));
   if([...s.wd].every(x=>s.g.includes(x)))s.w=s.gu;else if([...s.g].filter(x=>!s.wd.includes(x)).length>=6)s.w=s.sr},
- draw(s,me){const A=chg('hg',[...(s.wd||'??????')].map(x=>s.ph=='p'&&(s.g.includes(x)||s.w!=null)?1:0)),bad=[...s.g].filter(x=>!s.wd.includes(x)),correct=[...new Set([...s.g].filter(x=>s.wd.includes(x)))].length,parts=Math.max(0,6-correct),P=[()=>c.arc(220,125,25,0,7),()=>{c.moveTo(220,150);c.lineTo(220,235)},()=>{c.moveTo(220,170);c.lineTo(190,210)},()=>{c.moveTo(220,170);c.lineTo(250,210)},()=>{c.moveTo(220,235);c.lineTo(195,285)},()=>{c.moveTo(220,235);c.lineTo(245,285)}];
+ draw(s,me){const A=chg('hg',[...(s.wd||'??????')].map(x=>s.ph=='p'&&(s.g.includes(x)||s.w!=null)?1:0)),bad=[...s.g].filter(x=>!s.wd.includes(x)),parts=Math.max(0,bad.length-[...s.g].filter(x=>s.wd.includes(x)).length),P=[()=>c.arc(220,125,25,0,7),()=>{c.moveTo(220,150);c.lineTo(220,235)},()=>{c.moveTo(220,170);c.lineTo(190,210)},()=>{c.moveTo(220,170);c.lineTo(250,210)},()=>{c.moveTo(220,235);c.lineTo(195,285)},()=>{c.moveTo(220,235);c.lineTo(245,285)}];
   c.strokeStyle='#eee';c.lineWidth=4;c.beginPath();c.moveTo(60,340);c.lineTo(240,340);c.moveTo(100,340);c.lineTo(100,60);c.lineTo(220,60);c.lineTo(220,100);c.stroke();
   c.beginPath();P.slice(0,parts).forEach(f=>f());c.stroke();
   T(s.ph=='s'?(me==s.sr?'Choose a word above':'Host is choosing a word...'):me==s.gu?'Guess a letter':'Opponent is guessing',300,22,20);
