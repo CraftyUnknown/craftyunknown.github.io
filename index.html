@@ -138,7 +138,7 @@ const lock=(s,i)=>{const q=s.p[i];q.k.forEach(([a,d])=>{if(q.y+d>=0)q.b[q.y+d][q
 const tmv=(s,p,a)=>{const q=s.p[p];
   if(a=='L'&&!hit(q.b,q.k,q.x-1,q.y))q.x--;
   if(a=='R'&&!hit(q.b,q.k,q.x+1,q.y))q.x++;
-  if(a=='U'){const k=q.k.map(([x,y])=>[-y,x]);if(!hit(q.b,k,q.x,q.y))q.k=k}
+  if(a=='U'&&q.k!==PC[1]){const k=q.k.map(([x,y])=>[-y,x]);if(!hit(q.b,k,q.x,q.y))q.k=k}
   if(a=='D')step(s,p);
   if(a=='H'){while(!hit(q.b,q.k,q.x,q.y+1))q.y++;lock(s,p)}};
 const step=(s,i)=>{const q=s.p[i];hit(q.b,q.k,q.x,q.y+1)?lock(s,i):q.y++};
