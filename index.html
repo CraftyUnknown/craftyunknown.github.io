@@ -216,7 +216,7 @@ chess:{n:'Chess',min:2,max:2,tie:1,
   const side=(x0,title,list,n,lead,turn)=>{T(title,x0+38,56,14,turn?'#fff':'#888');[...list].sort((a,b)=>(V[b.toLowerCase()]||0)-(V[a.toLowerCase()]||0)).forEach((o,k)=>pc(o,x0+16+(k%3)*22,92+(k/3|0)*26,22));
    T('Pieces '+n,x0+38,400,13,'#aaa');if(lead>0)T('+'+lead,x0+38,430,22,'#7c7')};
   side(0,'You took',cp[me],left(me==0),adv,s.t==me&&s.w==null);side(524,'Opp took',cp[1-me],left(me==1),-adv,s.t!=me&&s.w==null);
-  T(msg(s,me)+(me?' (black)':' (white)'),300,520,20);T('Move '+(s.mn||0),300,550,14,'#888')}},
+  T(msg(s,me)+(me?' - you are black':' - you are white'),300,520,20);T('Move '+(s.mn||0),300,550,14,'#888')}},
 
 cards:{n:'Crazy Cards',min:2,max:4,
  init:n=>{const s={h:Array.from({length:n},()=>Array.from({length:7},dr)),u:0,d:1,w:null,pk:0};do s.t=dr();while(s.t[0]=='k');s.c=s.t[0];s.pl=[[s.t,0,-1]];return s},
@@ -247,7 +247,7 @@ c4:{n:'Connect 4',min:2,max:2,tie:1,dl:1400,
   const m=cs.find(x=>win(d(x,2),7,6,4))??cs.find(x=>win(d(x,1),7,6,4))??cs.map(x=>[Math.abs(x-3)+Math.random()*2,x]).sort((a,b)=>a[0]-b[0])[0][1];
   this.act(s,1,ck(60+m*80,300))},
  draw(s,me){R(20,70,560,480,'#444');{const A=chg('c4',s.b);s.b.forEach((v,i)=>O(60+i%7*80,110+(i/7|0)*80,32,v&&A[i].t<450&&!A[i].o?'#111':['#111','#fff','#e44'][v]));s.b.forEach((v,i)=>{const t=A[i].t/450;if(v&&t<1&&!A[i].o)O(60+i%7*80,30+(110+(i/7|0)*80-30)*t*t,32,['','#fff','#e44'][v])})}if(s.w!=null&&s.w<2){const L=wline(s.b,7,6,4);if(L){const t=ez((ap('wl')-500)/450),x1=60+L[0]*80,y1=110+L[1]*80,x2=60+L[2]*80,y2=110+L[3]*80;c.strokeStyle='#fd4';c.lineWidth=10;c.lineCap='round';c.beginPath();c.moveTo(x1,y1);c.lineTo(x1+(x2-x1)*t,y1+(y2-y1)*t);c.stroke();c.lineCap='butt'}}
-  T(msg(s,me)+(me?' (red)':' (white)'),300,35,22)}},
+  T(msg(s,me)+(me?' - you are red':' - you are white'),300,35,22)}},
 
 ttt:{n:'Tic-tac-toe',min:2,max:2,tie:1,
  init:()=>({b:Array(9).fill(0),t:0,w:null}),
@@ -255,7 +255,7 @@ ttt:{n:'Tic-tac-toe',min:2,max:2,tie:1,
   if(X<0||X>2||Y<0||Y>2||s.b[i])return;s.b[i]=p+1;const v=win(s.b,3,3,3);s.w=v?v-1:s.b.includes(0)?null:2;s.t=1-p},
  ai(s){if(s.t!=1||s.w!=null)return;const e=[...s.b.keys()].filter(i=>!s.b[i]),t=(i,v)=>{s.b[i]=v;const w=win(s.b,3,3,3);s.b[i]=0;return w};
   const m=e.find(i=>t(i,2))??e.find(i=>t(i,1))??(s.b[4]?e[Math.random()*e.length|0]:4);this.act(s,1,ck(120+m%3*180,140+(m/3|0)*180))},
- draw(s,me){const A=chg('tt',s.b);s.b.forEach((v,i)=>{const x=30+i%3*180,y=50+(i/3|0)*180;R(x+2,y+2,176,176,'#222');T(['','X','O'][v],x+90,y+95,120*ez(A[i].t/250))});T(msg(s,me)+(me?' (O)':' (X)'),300,25,22)}},
+ draw(s,me){const A=chg('tt',s.b);s.b.forEach((v,i)=>{const x=30+i%3*180,y=50+(i/3|0)*180;R(x+2,y+2,176,176,'#222');T(['','X','O'][v],x+90,y+95,120*ez(A[i].t/250))});T(msg(s,me)+(me?' - you are O':' - you are X'),300,25,22)}},
 
 gomoku:{n:'Gomoku',min:2,max:2,tie:1,
  init:()=>({b:Array(225).fill(0),t:0,w:null}),
@@ -267,7 +267,7 @@ gomoku:{n:'Gomoku',min:2,max:2,tie:1,
    s.b[i]=2;if(win(s.b,15,15,5))v+=1e3;s.b[i]=1;if(win(s.b,15,15,5))v+=500;s.b[i]=0;if(v>best){best=v;bi=i}});
   this.act(s,1,ck(48+bi%15*36,63+(bi/15|0)*36))},
  draw(s,me){const A=chg('gm',s.b);c.strokeStyle='#555';c.beginPath();for(let i=0;i<15;i++){c.moveTo(48,63+i*36);c.lineTo(552,63+i*36);c.moveTo(48+i*36,63);c.lineTo(48+i*36,567)}c.stroke();
-  s.b.forEach((v,i)=>{if(v){const e=ez(A[i].t/250);O(48+i%15*36,63+(i/15|0)*36,15*e,'#888');O(48+i%15*36,63+(i/15|0)*36,13*e,['','#fff','#222'][v])}});T(msg(s,me)+(me?' (black)':' (white)'),300,22,20)}},
+  s.b.forEach((v,i)=>{if(v){const e=ez(A[i].t/250);O(48+i%15*36,63+(i/15|0)*36,15*e,'#888');O(48+i%15*36,63+(i/15|0)*36,13*e,['','#fff','#222'][v])}});T(msg(s,me)+(me?' - you are black':' - you are white'),300,22,20)}},
 
 reversi:{n:'Reversi',min:2,max:2,tie:1,
  init:()=>{const b=Array(64).fill(0);b[27]=b[36]=1;b[28]=b[35]=2;return{b,t:0,w:null}},
@@ -341,7 +341,7 @@ checkers:{n:'Checkers',min:2,max:2,tie:1,
   for(let i=0;i<64;i++){const[px,py]=P(i),v=s.b[i];R(px,py,70,70,(i%8+(i>>3))%2?'#555':'#ccc');if(i==s.s)R(px,py,70,70,'#796');
    if(v){if(i!=mi)pc(v,px,py)}else if(s.s>=0&&L.some(a=>a[0]==s.s&&a[1]==i))O(px+35,py+35,8,'#9c9')}
   if(mi>=0&&s.b[mi]){const[px,py]=P(mi),[fx,fy]=P(s.l[0]);pc(s.b[mi],px+(fx-px)*t,py+(fy-py)*t)}
-  T(msg(s,me)+(me?' (dark)':' (white)'),300,590,20)}},
+  T(msg(s,me)+(me?' - you are dark':' - you are white'),300,590,20)}},
 
 n2048:{n:'2048',min:1,max:2,
  res:(s,me)=>s.p.length<2?'Game over - score '+s.p[0].sc:s.w==2?'Draw':s.w==me?'You win!':'You lose',
