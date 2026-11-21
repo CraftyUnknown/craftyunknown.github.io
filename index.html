@@ -572,7 +572,7 @@ function hn(H){const T='cuhub-'+code,w={};nok().then(()=>{if(peer!=H)return;H.b=
 function acc(c,p){c.on('open',()=>{if(started||conns.length>=g.max-1)return c.close();conns.push(c);c.send({ix:conns.length});lob()});
  c.on('data',m=>m.rm?rem(conns.indexOf(c)+1):m.cm?chat(conns.indexOf(c)+1,m.cm):S&&g.act(S,conns.indexOf(c)+1,m));
  c.on('close',()=>{if(peer==p&&!started){conns=conns.filter(x=>x!=c);lob()}})}
-function cli(c,p){c.on('open',()=>show(`<h2>Lobby ${code}</h2><p id=n>Connected</p><button onclick=menu()>Leave</button>`));
+function cli(c,p){c.on('open',()=>{if(location.hash.startsWith('#join='))history.replaceState(null,'',location.pathname+location.search);show(`<h2>Lobby ${code}</h2><p id=n>Connected</p><button onclick=menu()>Leave</button>`)});
  c.on('data',m=>{if(m.ix!=null)ci=m.ix;if(m.ch)addMsg(m.ch);if(m.l&&$('n'))$('n').textContent='Players: '+m.l+' - waiting for host';if(m.g){g=G[m.g];me=m.me;S=null;started=1;begin()}if(m.rq)ask(m.rq);if(m.rs){rst();shown='';want=new Set;hangPrompted=false;PU.hidden=true;if(m.s)S=m.s}else if(m.s)S=m.s;if(S&&g.k=='hangman'&&S.ph=='s'&&me==S.sr)wordPick()});
  c.on('close',()=>{if(peer==p){alert('Disconnected');menu()}})}
 // ---- backup signaling over ntfy.sh (HTTPS only): same 4-letter codes, used automatically when PeerJS servers are unreachable ----
