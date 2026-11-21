@@ -209,7 +209,11 @@ chess:{n:'Chess',min:2,max:2,tie:1,
    if(n.some((o,k)=>o&&o<'a'&&mv(n,k).includes(j)))v-=V[q];if(v>bs){bs=v;best=[i,j]}})});
   if(best)best.forEach(i=>this.act(s,1,ck(104+(7-i%8)*56,68+(7-(i>>3))*56)))},
  draw(s,me){const sel=s.t===me&&s.s>=0?lm(s.b,s.s):[],P=i=>{let x=i%8,y=i>>3;if(me){x=7-x;y=7-y}return[76+x*56,40+y*56]},
-  pc=(q,x,y,z)=>{const w=q<'a',ch='♟♞♝♜♛♚'['pnbrqk'.indexOf(q.toLowerCase())]+'︎';c.font=z+'px sans-serif';c.textAlign='center';c.textBaseline='middle';c.lineWidth=2;c.strokeStyle=w?'#000':'#fff';c.fillStyle=w?'#fff':'#000';c.strokeText(ch,x,y);c.fillText(ch,x,y)},
+  pc=(q,x,y,z)=>{const w=q<'a',white={p:'♙',n:'♘',b:'♗',r:'♖',q:'♕',k:'♔'},black={p:'♟',n:'♞',b:'♝',r:'♜',q:'♛',k:'♚'},ch=(w?white:black)[q.toLowerCase()];
+   c.save();c.textAlign='center';c.textBaseline='middle';c.font='bold '+z+'px "Segoe UI Symbol", "Noto Sans Symbols 2", "DejaVu Sans", serif';
+   c.shadowColor=w?'rgba(0,0,0,.65)':'rgba(255,255,255,.35)';c.shadowBlur=3;c.shadowOffsetY=2;
+   c.lineJoin='round';c.lineWidth=Math.max(1.5,z*.055);c.strokeStyle=w?'#514b40':'#eee9df';c.fillStyle=w?'#fffdf5':'#202329';c.strokeText(ch,x,y);c.fillText(ch,x,y);
+   c.shadowColor='transparent';c.lineWidth=.7;c.strokeStyle=w?'rgba(255,255,255,.8)':'rgba(0,0,0,.65)';c.strokeText(ch,x,y);c.restore()},
   t=s.l?1-ez(ap('m'+s.mn)/220):0,mi=t>0?s.l[1]:-1;
   for(let i=0;i<64;i++){const[px,py]=P(i),q=s.b[i];R(px,py,56,56,(i%8+(i>>3))%2?'#777':'#ccc');if(s.l&&s.l.includes(i))R(px,py,56,56,i==s.l[0]?'#b96':'#b8e6a0');if(s.t===me&&i==s.s)R(px,py,56,56,'#9a6');
    if(q&&i!=mi)pc(q,px+28,py+30,44);if(sel.includes(i))O(px+28,py+28,7,'#6a4')}
@@ -218,9 +222,13 @@ chess:{n:'Chess',min:2,max:2,tie:1,
   for(let x=0;x<8;x++)T(String.fromCharCode(65+(me?7-x:x)),104+x*56,25,14,'#aaa');
   for(let y=0;y<8;y++)T(String(me?y+1:8-y),62,68+y*56,14,'#aaa');
   const turn=s.t===me?'Your turn':"Opponent's turn",colour=s.t===0?'White':'Black';
-  T(s.w==null?turn+' ('+colour+' to move)':'Game over',300,510,19);
+  T(s.w==null?turn+' ('+colour+')':'Game over',300,510,19);
   const cp=s.cp||[[],[]],V={p:1,n:3,b:3,r:5,q:9},sum=l=>l.reduce((a,o)=>a+(V[o.toLowerCase()]||0),0),adv=sum(cp[me])-sum(cp[1-me]);
-  T('Move '+(s.mn||0)+'   Captured: '+cp[me].length+' - '+cp[1-me].length+(adv?'   Material '+(adv>0?'+':'')+adv:''),300,540,14,'#999')}},
+  T('Captured',112,548,13,'#aaa');
+  const drawCaptured=(list,x)=>{list.forEach((q,i)=>pc(q,x+i*23,548,19))};
+  drawCaptured(cp[me],160);drawCaptured(cp[1-me],350);
+  T('Move '+(s.mn||0),300,580,13,'#999');
+  if(adv)T((adv>0?'+':'')+adv,520,548,20,'#45c878')}},
 
 cards:{n:'Crazy Cards',min:2,max:4,
  init:n=>{const s={h:Array.from({length:n},()=>Array.from({length:7},dr)),u:0,d:1,w:null,pk:0};do s.t=dr();while(s.t[0]=='k');s.c=s.t[0];s.pl=[[s.t,0,-1]];return s},
