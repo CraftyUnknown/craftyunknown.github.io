@@ -399,12 +399,12 @@ hangman:{n:'Hangman',min:2,max:2,
   else if(!m.k&&m.d===1&&m.x!=null){const X=Math.floor((m.x*600-30)/60),Y=Math.floor((m.y*600-380)/60),i=Y*9+X;if(X>=0&&X<9&&Y>=0&&Y<3&&(m.x*600-30)%60<56&&i<26)l=String.fromCharCode(97+i)}
   if(!l||s.g.includes(l))return;s.g+=l;s.wr=s.wd.includes(l)?Math.max(0,(s.wr||0)-1):(s.wr||0)+1;;lg(s,p,'% guessed '+l.toUpperCase()+(s.wd.includes(l)?' - correct':' - wrong'));
   if([...s.wd].every(x=>s.g.includes(x)))s.w=s.gu;else if(s.wr>=6)s.w=s.sr},
- draw(s,me){const A=chg('hg',[...(s.wd||'??????')].map(x=>s.ph=='p'&&(s.g.includes(x)||s.w!=null)?1:0)),bad=[...s.g].filter(x=>!s.wd.includes(x)),parts=Math.max(0,bad.length-[...s.g].filter(x=>s.wd.includes(x)).length),P=[()=>c.arc(220,125,25,0,7),()=>{c.moveTo(220,150);c.lineTo(220,235)},()=>{c.moveTo(220,170);c.lineTo(190,210)},()=>{c.moveTo(220,170);c.lineTo(250,210)},()=>{c.moveTo(220,235);c.lineTo(195,285)},()=>{c.moveTo(220,235);c.lineTo(245,285)}];
+ draw(s,me){const A=chg('hg',[...(s.wd||'??????')].map(x=>s.ph=='p'&&(s.g.includes(x)||s.w!=null)?1:0)),bad=[...s.g].filter(x=>!s.wd.includes(x)),parts=s.wr||0,P=[()=>c.arc(220,125,25,0,7),()=>{c.moveTo(220,150);c.lineTo(220,235)},()=>{c.moveTo(220,170);c.lineTo(190,210)},()=>{c.moveTo(220,170);c.lineTo(250,210)},()=>{c.moveTo(220,235);c.lineTo(195,285)},()=>{c.moveTo(220,235);c.lineTo(245,285)}];
   c.strokeStyle='#eee';c.lineWidth=4;c.beginPath();c.moveTo(60,340);c.lineTo(240,340);c.moveTo(100,340);c.lineTo(100,60);c.lineTo(220,60);c.lineTo(220,100);c.stroke();
   c.beginPath();P.slice(0,parts).forEach(f=>f());c.stroke();
   T(s.ph=='s'?(me==s.sr?'Choose a word above':'Host is choosing a word...'):me==s.gu?'Guess a letter':'Opponent is guessing',300,22,20);
   const sp=Math.min(32,290/Math.max(1,s.wd.length||6));[...(s.wd||'??????')].forEach((x,i)=>{const L=s.ph=='p'&&(s.g.includes(x)||s.w!=null);T(L?x.toUpperCase():'_',300+sp*(i+.5)+(290-sp*(s.wd.length||6))/2,150,36*(L&&A[i].t<250?1+.6*(1-A[i].t/250):1))});
-  T('Wrong: '+bad.length+'/6   '+bad.join(' ').toUpperCase(),440,230,18);
+  T('Wrong: '+parts+'/6   '+bad.join(' ').toUpperCase(),440,230,18);
   for(let i=0;i<26;i++){const l=String.fromCharCode(97+i),x=30+i%9*60,y=380+(i/9|0)*60;R(x,y,56,52,s.g.includes(l)?'#222':'#555');T(l.toUpperCase(),x+28,y+27,24,s.g.includes(l)?'#666':'#eee')}}},
 
 blackjack:{n:'Blackjack',min:1,max:4,
