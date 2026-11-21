@@ -496,10 +496,10 @@ const draw=()=>{if(!S)return;R(0,0,600,600,'#111');c.lineWidth=1;g.draw(S,me);
  const t=S.w==null?'':g.res?g.res(S,me):S.w==2&&g.tie?'Draw':S.w==me?'You win!':g.k=='cards'?'P'+(S.w+1)+' wins':'You lose';
  if(t&&g.dl&&ap('pd')<g.dl)return;
  if(t!=shown){shown=t;if(t)popup(t);if(t.startsWith('You win'))confetti()}};
-function rem(p){want.add(p);if(want.size>=(bot?1:np)){want=new Set;hangPrompted=false;S=g.init(np,bot,S);rst();shown='';PU.hidden=true;conns.forEach(c=>c.send({rs:1,s:S}))}else{const l=[...want];ask(l);conns.forEach(c=>c.send({rq:l}))}}
+function rem(p){want.add(p);if(want.size>=(bot?1:np)){want=new Set;hangPrompted=false;S=g.init(np,bot,S);rst();shown='';PU.hidden=true;conns.forEach(c=>c.send({rs:1,s:S}));wordPick()}else{const l=[...want];ask(l);conns.forEach(c=>c.send({rq:l}))}}
 const rm=()=>cn?cn.send({rm:1}):rem(0);
 function wordPick(){if(!S||g.k!='hangman'||S.ph!='s'||me!=S.sr||hangPrompted)return;hangPrompted=true;PU.innerHTML='<h3>Choose a word</h3><p style="font-size:15px">Enter 2–15 letters for your opponent to guess.</p><form onsubmit="return submitHangmanWord()"><input id=hangWord maxlength=15 minlength=2 pattern="[A-Za-z]{2,15}" autocomplete=off autofocus placeholder="Enter a word"><br><button type=submit>Set word</button><button type=button onclick="PU.hidden=true;hangPrompted=false">Cancel</button></form>';PU.hidden=false;setTimeout(()=>$('hangWord')&&$('hangWord').focus(),50)}
-function submitHangmanWord(){const v=($('hangWord')?.value||'').trim().toLowerCase();if(!/^[a-z]{2,15}$/.test(v)){alert('Please enter 2–15 letters only.');return false}g.act(S,me,{tx:v});PU.hidden=true;return false}
+function submitHangmanWord(){const v=($('hangWord')?.value||'').trim().toLowerCase();if(!/^[a-z]{2,15}$/.test(v)){alert('Please enter 2–15 letters only.');return false}send({tx:v});PU.hidden=true;return false}
 function copyInvite(){const url=location.href.split('#')[0]+'#join='+encodeURIComponent(code);if(navigator.clipboard?.writeText)navigator.clipboard.writeText(url).then(()=>toast('Invite link copied')).catch(()=>prompt('Copy this invite link:',url));else prompt('Copy this invite link:',url)}
 const show=h=>{P.innerHTML=h;P.hidden=false};
 let paused=0;
