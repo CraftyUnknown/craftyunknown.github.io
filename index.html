@@ -23,23 +23,24 @@ button{cursor:pointer}
 #pop{position:fixed;top:30%;left:50%;transform:translateX(-50%);z-index:4;background:#222;border:1px solid #888;padding:24px 40px;font-size:32px;text-align:center}
 #m,#pz{position:fixed;top:8px;left:8px;z-index:3;font-size:20px}
 #pz{left:64px}
+#lv{position:fixed;top:8px;left:120px;z-index:7;font-size:14px}
 #clock{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2vh;font:14vw monospace}
 #an{width:min(50vh,70vw)}
 #aw{position:fixed;bottom:16px;width:100%;text-align:center;color:#888}
-#aw{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:10px}
-#sv{cursor:pointer}
-#onl{color:#aaa;font-size:13px;white-space:nowrap}
+#sv{margin-left:20px;cursor:pointer}
 #sv:before{content:'';display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:#db3}
 #sv[data-s=g]:before{background:#4c4}
 #sv[data-s=r]:before{background:#e44}
+#on{margin-left:12px;white-space:nowrap}
+#on:before{content:'';display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;background:#4c4}
 #p{position:fixed;inset:0;z-index:2;background:#111;overflow:auto;text-align:center;padding-top:56px}
 #cv{display:none;position:fixed;inset:0;margin:auto;z-index:1;width:min(100vw,100dvh);height:min(100vw,100dvh);max-width:100vw;max-height:100dvh;touch-action:none}
 </style></head><body>
-<button id="m" onclick="menu()">☰</button><button id="pz" onclick="pause()" hidden>⏸</button>
+<button id="m" onclick="menu()">☰</button><button id="pz" onclick="pause()" hidden>⏸</button><button id="lv" onclick="menu()" hidden>Leave</button>
 <div id="clock"><svg id="an" viewBox="-50 -50 100 100" stroke="#eee" stroke-linecap="round">
 <circle r="47" fill="none" stroke-width="1"/><g id="nm" stroke="none" fill="#eee" font-size="7" text-anchor="middle" dominant-baseline="central"></g>
 <line id="hh" y2="-22" stroke-width="3"/><line id="mm" y2="-32" stroke-width="2"/><line id="ss" y2="-36" stroke="#888" stroke-width="1"/></svg><div id="dg"></div></div>
-<div id="aw"><label><input type="checkbox" id="wl" checked> Keep screen awake</label><span id="sv" onclick="svc()" title="Click to re-check"></span><span id="onl" title="Visitors active on this site">Online: counting...</span></div>
+<div id="aw"><label><input type="checkbox" id="wl" checked> Keep screen awake</label><span id="sv" onclick="svc()" title="Click to re-check"></span><span id="on">Online: —</span></div>
 <div id="p" hidden></div>
 <div id="pop" hidden></div>
 <div id="ts"></div>
@@ -207,21 +208,19 @@ chess:{n:'Chess',min:2,max:2,tie:1,
   s.b.forEach((q,i)=>{if(q<'a')return;lm(s.b,i).forEach(j=>{let v=(V[(s.b[j]||'').toLowerCase()]||0)+Math.random()*.5;const n=[...s.b];n[j]=q;n[i]='';
    if(n.some((o,k)=>o&&o<'a'&&mv(n,k).includes(j)))v-=V[q];if(v>bs){bs=v;best=[i,j]}})});
   if(best)best.forEach(i=>this.act(s,1,ck(104+(7-i%8)*56,68+(7-(i>>3))*56)))},
- draw(s,me){const sel=s.t==me&&s.s>=0?lm(s.b,s.s):[],P=i=>{let x=i%8,y=i>>3;if(me){x=7-x;y=7-y}return[76+x*56,40+y*56]},
+ draw(s,me){const sel=s.t===me&&s.s>=0?lm(s.b,s.s):[],P=i=>{let x=i%8,y=i>>3;if(me){x=7-x;y=7-y}return[76+x*56,40+y*56]},
   pc=(q,x,y,z)=>{const w=q<'a',ch='♟♞♝♜♛♚'['pnbrqk'.indexOf(q.toLowerCase())]+'︎';c.font=z+'px sans-serif';c.textAlign='center';c.textBaseline='middle';c.lineWidth=2;c.strokeStyle=w?'#000':'#fff';c.fillStyle=w?'#fff':'#000';c.strokeText(ch,x,y);c.fillText(ch,x,y)},
   t=s.l?1-ez(ap('m'+s.mn)/220):0,mi=t>0?s.l[1]:-1;
-  for(let i=0;i<64;i++){const[px,py]=P(i),q=s.b[i],file='ABCDEFGH'[i%8],rank=String(8-(i>>3));R(px,py,56,56,(i%8+(i>>3))%2?'#777':'#ccc');if(s.l&&s.l.includes(i))R(px,py,56,56,i==s.l[0]?'#b96':'#b8e6a0');if(i==s.s&&s.t==me)R(px,py,56,56,'#9a6');
-   T(file,px+7,py+7,9,(i%8+(i>>3))%2?'#ddd':'#555');T(rank,px+49,py+49,9,(i%8+(i>>3))%2?'#ddd':'#555');
+  for(let i=0;i<64;i++){const[px,py]=P(i),q=s.b[i];R(px,py,56,56,(i%8+(i>>3))%2?'#777':'#ccc');if(s.l&&s.l.includes(i))R(px,py,56,56,i==s.l[0]?'#b96':'#b8e6a0');if(s.t===me&&i==s.s)R(px,py,56,56,'#9a6');
    if(q&&i!=mi)pc(q,px+28,py+30,44);if(sel.includes(i))O(px+28,py+28,7,'#6a4')}
   if(mi>=0){const[px,py]=P(mi),[fx,fy]=P(s.l[0]);pc(s.b[mi],px+(fx-px)*t+28,py+(fy-py)*t+30,44)}
-  // Compact status and material summary. Keep all text inside the canvas on tablets.
-  const V={p:1,n:3,b:3,r:5,q:9},sum=l=>l.reduce((a,o)=>a+(V[o.toLowerCase()]||0),0),cp=s.cp||[[],[]],adv=sum(cp[me])-sum(cp[1-me]);
-  const color=me?'Black':'White',opp=me?'White':'Black';
-  T(color+' (you)  '+s.b.filter(v=>v&&(v<'a')==(me==0)).length+' pieces',160,16,13,'#ddd');
-  T(opp+'  '+s.b.filter(v=>v&&(v<'a')==(me!=0)).length+' pieces',440,16,13,'#aaa');
-  T((s.t==me?'Your turn':'Opponent\'s turn')+' ('+(s.t?'Black':'White')+' to move)',300,520,18);
-  T('Captured: '+cp[me].length+' - '+cp[1-me].length+'  |  Material: '+(adv>0?'+'+adv:adv),300,550,13,'#888');
-  T('Move '+(s.mn||0),300,578,12,'#888')}}, 
+  // Coordinate strips rotate with the board.
+  for(let x=0;x<8;x++)T(String.fromCharCode(65+(me?7-x:x)),104+x*56,25,14,'#aaa');
+  for(let y=0;y<8;y++)T(String(me?y+1:8-y),62,68+y*56,14,'#aaa');
+  const turn=s.t===me?'Your turn':"Opponent's turn",colour=s.t===0?'White':'Black';
+  T(s.w==null?turn+' ('+colour+' to move)':'Game over',300,510,19);
+  const cp=s.cp||[[],[]],V={p:1,n:3,b:3,r:5,q:9},sum=l=>l.reduce((a,o)=>a+(V[o.toLowerCase()]||0),0),adv=sum(cp[me])-sum(cp[1-me]);
+  T('Move '+(s.mn||0)+'   Captured: '+cp[me].length+' - '+cp[1-me].length+(adv?'   Material '+(adv>0?'+':'')+adv:''),300,540,14,'#999')}},
 
 cards:{n:'Crazy Cards',min:2,max:4,
  init:n=>{const s={h:Array.from({length:n},()=>Array.from({length:7},dr)),u:0,d:1,w:null,pk:0};do s.t=dr();while(s.t[0]=='k');s.c=s.t[0];s.pl=[[s.t,0,-1]];return s},
@@ -398,14 +397,13 @@ hangman:{n:'Hangman',min:2,max:2,
   else if(!m.k&&m.d===1&&m.x!=null){const X=Math.floor((m.x*600-30)/60),Y=Math.floor((m.y*600-380)/60),i=Y*9+X;if(X>=0&&X<9&&Y>=0&&Y<3&&(m.x*600-30)%60<56&&i<26)l=String.fromCharCode(97+i)}
   if(!l||s.g.includes(l))return;s.g+=l;lg(s,p,'% guessed '+l.toUpperCase()+(s.wd.includes(l)?' - correct':' - wrong'));
   if([...s.wd].every(x=>s.g.includes(x)))s.w=s.gu;else if([...s.g].filter(x=>!s.wd.includes(x)).length>=6)s.w=s.sr},
- draw(s,me){const A=chg('hg',[...(s.wd||'??????')].map(x=>s.ph=='p'&&(s.g.includes(x)||s.w!=null)?1:0)),bad=[...s.g].filter(x=>!s.wd.includes(x)),P=[()=>c.arc(220,125,25,0,7),()=>{c.moveTo(220,150);c.lineTo(220,235)},()=>{c.moveTo(220,170);c.lineTo(190,210)},()=>{c.moveTo(220,170);c.lineTo(250,210)},()=>{c.moveTo(220,235);c.lineTo(195,285)},()=>{c.moveTo(220,235);c.lineTo(245,285)}];
+ draw(s,me){const A=chg('hg',[...(s.wd||'??????')].map(x=>s.ph=='p'&&(s.g.includes(x)||s.w!=null)?1:0)),bad=[...s.g].filter(x=>!s.wd.includes(x)),correct=[...new Set([...s.g].filter(x=>s.wd.includes(x)))].length,parts=Math.max(0,6-correct),P=[()=>c.arc(220,125,25,0,7),()=>{c.moveTo(220,150);c.lineTo(220,235)},()=>{c.moveTo(220,170);c.lineTo(190,210)},()=>{c.moveTo(220,170);c.lineTo(250,210)},()=>{c.moveTo(220,235);c.lineTo(195,285)},()=>{c.moveTo(220,235);c.lineTo(245,285)}];
   c.strokeStyle='#eee';c.lineWidth=4;c.beginPath();c.moveTo(60,340);c.lineTo(240,340);c.moveTo(100,340);c.lineTo(100,60);c.lineTo(220,60);c.lineTo(220,100);c.stroke();
-  const correct=[...new Set([...s.g].filter(x=>s.wd.includes(x)))].length;
-  c.beginPath();P.slice(0,Math.max(0,6-correct)).forEach(f=>f());c.stroke();
-  T(s.ph=='s'?(me==s.sr?'Tap the screen to enter a word':'Opponent is choosing a word...'):me==s.gu?'Guess a letter':'Opponent is guessing',300,22,20);
+  c.beginPath();P.slice(0,parts).forEach(f=>f());c.stroke();
+  T(s.ph=='s'?(me==s.sr?'Choose a word above':'Host is choosing a word...'):me==s.gu?'Guess a letter':'Opponent is guessing',300,22,20);
   const sp=Math.min(32,290/Math.max(1,s.wd.length||6));[...(s.wd||'??????')].forEach((x,i)=>{const L=s.ph=='p'&&(s.g.includes(x)||s.w!=null);T(L?x.toUpperCase():'_',300+sp*(i+.5)+(290-sp*(s.wd.length||6))/2,150,36*(L&&A[i].t<250?1+.6*(1-A[i].t/250):1))});
   T('Wrong: '+bad.length+'/6   '+bad.join(' ').toUpperCase(),440,230,18);
-  for(let i=0;i<26;i++){const l=String.fromCharCode(97+i),x=30+i%9*60,y=380+(i/9|0)*60;R(x,y,56,52,s.ph!='p'||s.g.includes(l)?'#222':'#555');T(l.toUpperCase(),x+28,y+27,24,s.ph!='p'||s.g.includes(l)?'#666':'#eee')}}},
+  for(let i=0;i<26;i++){const l=String.fromCharCode(97+i),x=30+i%9*60,y=380+(i/9|0)*60;R(x,y,56,52,s.g.includes(l)?'#222':'#555');T(l.toUpperCase(),x+28,y+27,24,s.g.includes(l)?'#666':'#eee')}}},
 
 blackjack:{n:'Blackjack',min:1,max:4,
  res:(s,me)=>({w:'You win!',l:'You lose',t:'Push - it is a tie'})[s.r[me]],
@@ -479,7 +477,7 @@ hangman:'Goal: guess the secret word before the drawing is finished.\nOne player
 blackjack:'Goal: get a hand worth closer to 21 than the dealer, without going over.\nControls: Hit (or press H) to take another card, Stand (or press S) to stop.\nNumber cards are worth their number, J/Q/K are 10 and an Ace is 11 or 1, whichever suits you. Over 21 is a bust and you lose. When everyone has finished, the dealer draws until reaching 17 or more. Beat the dealer to win, equal is a push (tie). 1 to 4 players play at the same table.',
 mancala:'Goal: collect more stones in your store than your opponent.\nControls: click one of your pits (the bottom row) to pick up all its stones and sow them one by one into the following pits, going counter-clockwise and including your own store (the big pit on your right).\nIf your last stone lands in your store you get another turn. If it lands in an empty pit on your side, you capture that stone plus everything in the opposite pit. The game ends when one side is empty and the other side\'s stones go to its owner.',
 dots:'Goal: claim more boxes than your opponent.\nControls: click a line between two dots to draw it.\nWhen you draw the fourth side of a box you claim it and must go again. Otherwise it is the other player\'s turn. Avoid drawing the third side of any box, since that lets your opponent complete it. The player with the most boxes at the end wins.',
-flappy:'Goal: fly as far as you can by passing through the gaps in the pipes.\nControls: press space or the up arrow, or click/tap, to flap. Gravity pulls you down between flaps.\nTouching a pipe, the ceiling or the ground ends your run. Each pipe you pass is one point. Try to beat your best score.'};
+flappy:'Goal: fly as far as you can by passing through the gaps in the pipes.\nControls: press space or the up arrow, or click/tap, to flap. Gravity pulls you down between flaps.\nTouching a pipe, the ceiling or the ground ends your run. Each pipe you pass is one point. In 2 player mode you each fly your own bird over the same pipes and the higher score wins.'};
 Object.entries(G).forEach(([k,v])=>{v.k=k;v.how=HOW[k]});
 
 // ---- framework: host runs the game and broadcasts state; clients send input ----
@@ -487,19 +485,8 @@ let g,S,me,cn,peer,iv,code,started,bot,bt=0,conns=[];
 function confetti(){const f=$('cf'),x=f.getContext('2d'),W=f.width=innerWidth,H=f.height=innerHeight,t0=Date.now();f.hidden=false;
  const ps=Array.from({length:150},()=>({x:Math.random()*W,y:-Math.random()*H,v:3+Math.random()*4,a:Math.random()*6,s:5+Math.random()*6,c:`hsl(${Math.random()*360},80%,60%)`}));
  (function z(){x.clearRect(0,0,W,H);ps.forEach(p=>{p.y+=p.v;p.a+=.1;p.x+=Math.sin(p.a);x.fillStyle=p.c;x.fillRect(p.x,p.y,p.s,p.s*.6)});if(Date.now()-t0<4000)requestAnimationFrame(z);else f.hidden=true})()}
-let seen=0,shown='',np,want=new Set;
+let seen=0,shown='',np,want=new Set,hangPrompted=false;
 const popup=(t,x='')=>{PU.innerHTML=t+x+'<br><button onclick="rm()">Rematch</button><button onclick="leave();P.hidden=1">Close</button>';PU.hidden=false};
-function wordPick(){
- if(!S||g.k!='hangman'||S.ph!='s'||me!=S.sr)return;
- PU.innerHTML='<div style="font-size:20px;margin-bottom:12px">Choose a word</div><p style="font-size:14px;margin:0 0 10px">Enter 2–15 letters. Your opponent will not see it.</p><input id="hangWord" maxlength="15" autocomplete="off" autocapitalize="none" placeholder="Your word" style="font-size:20px;width:220px;text-align:center"><br><button onclick="submitHangmanWord()">Set word</button>';
- PU.hidden=false;
- setTimeout(()=>{const e=$('hangWord');if(e)e.focus()},30);
-}
-function submitHangmanWord(){
- const e=$('hangWord'),v=e?e.value.toLowerCase().replace(/[^a-z]/g,''):'';
- if(v.length<2||v.length>15){if(e){e.setCustomValidity('Enter 2–15 letters.');e.reportValidity()}return}
- PU.hidden=true;send({tx:v});
-}
 const ask=l=>{if(shown)popup(shown,l.includes(me)?'<p>Waiting for opponent...</p>':l.length?'<p>Opponent wants a rematch</p>':'')};
 const toast=t=>{const d=document.createElement('div');d.textContent=t;$('ts').append(d);setTimeout(()=>d.remove(),3500)};
 const draw=()=>{if(!S)return;R(0,0,600,600,'#111');c.lineWidth=1;g.draw(S,me);
@@ -507,23 +494,11 @@ const draw=()=>{if(!S)return;R(0,0,600,600,'#111');c.lineWidth=1;g.draw(S,me);
  const t=S.w==null?'':g.res?g.res(S,me):S.w==2&&g.tie?'Draw':S.w==me?'You win!':g.k=='cards'?'P'+(S.w+1)+' wins':'You lose';
  if(t&&g.dl&&ap('pd')<g.dl)return;
  if(t!=shown){shown=t;if(t)popup(t);if(t.startsWith('You win'))confetti()}};
-function rem(p){
- if(!Number.isInteger(p)||p<0||p>=np)return;
- want.add(p);
- if(want.size>=(bot?1:np)){
-  want=new Set();
-  S=g.init(np,bot,S);
-  rst();seen=0;shown='';PU.hidden=true;
-  // Send the complete new state, not just a reset signal. This keeps both
-  // players in the same round even if a client misses the first state tick.
-  conns.forEach(c=>c.send({rs:1,s:S}));
-  draw();
- }else{
-  const l=[...want];ask(l);
-  conns.forEach(c=>c.send({rq:l}));
- }
-}
-const rm=()=>{if(cn){PU.innerHTML='Waiting for opponent to accept the rematch...';cn.send({rm:1})}else rem(0)};
+function rem(p){want.add(p);if(want.size>=(bot?1:np)){want=new Set;hangPrompted=false;S=g.init(np,bot,S);rst();shown='';PU.hidden=true;conns.forEach(c=>c.send({rs:1,s:S}))}else{const l=[...want];ask(l);conns.forEach(c=>c.send({rq:l}))}}
+const rm=()=>cn?cn.send({rm:1}):rem(0);
+function wordPick(){if(!S||g.k!='hangman'||S.ph!='s'||me!=S.sr||hangPrompted)return;hangPrompted=true;PU.innerHTML='<h3>Choose a word</h3><p style="font-size:15px">Enter 2–15 letters for your opponent to guess.</p><form onsubmit="return submitHangmanWord()"><input id=hangWord maxlength=15 minlength=2 pattern="[A-Za-z]{2,15}" autocomplete=off autofocus placeholder="Enter a word"><br><button type=submit>Set word</button><button type=button onclick="PU.hidden=true;hangPrompted=false">Cancel</button></form>';PU.hidden=false;setTimeout(()=>$('hangWord')&&$('hangWord').focus(),50)}
+function submitHangmanWord(){const v=($('hangWord')?.value||'').trim().toLowerCase();if(!/^[a-z]{2,15}$/.test(v)){alert('Please enter 2–15 letters only.');return false}g.act(S,me,{tx:v});PU.hidden=true;return false}
+function copyInvite(){const url=location.href.split('#')[0]+'#join='+encodeURIComponent(code);if(navigator.clipboard?.writeText)navigator.clipboard.writeText(url).then(()=>toast('Invite link copied')).catch(()=>prompt('Copy this invite link:',url));else prompt('Copy this invite link:',url)}
 const show=h=>{P.innerHTML=h;P.hidden=false};
 let paused=0;
 const send=m=>{if(paused&&m.d)return;cn?cn.send(m):S&&g.act(S,0,m)};
@@ -531,11 +506,11 @@ const solo=()=>S&&!cn&&!conns.length;
 function pause(){if(!solo()||S.w!=null)return;if(paused)return resume();paused=1;clearInterval(iv);PU.innerHTML='Paused<br><button onclick="resume()">Resume</button><button onclick="leave();P.hidden=1">Close</button>';PU.hidden=false}
 function resume(){paused=0;PU.hidden=true;loop()}
 (function f(n){DT=Math.min(.05,(n-LT)/1000);LT=n;if(S&&cv.style.display=='block')draw();requestAnimationFrame(f)})(0);
-function leave(){clearInterval(iv);jn++;conns.forEach(c=>c.bye&&c.bye());CL=[];$('cl').innerHTML='';$('ch').hidden=true;$('cb').hidden=true;$('cb').textContent='💬 Chat';unread=0;ci=0;direct=0;pcs.forEach(x=>x.close());pcs=[];pend=null;paused=0;$('pz').hidden=true;const p=peer;peer=cn=null;p&&p.bc&&p.bc.close();p&&p.destroy();conns=[];S=null;started=0;bot=0;seen=0;$('ts').innerHTML='';shown='';want=new Set;PU.hidden=true;cv.style.display='none';$('clock').hidden=$('aw').hidden=false}
+function leave(){$('lv').hidden=true;clearInterval(iv);jn++;conns.forEach(c=>c.bye&&c.bye());CL=[];$('cl').innerHTML='';$('ch').hidden=true;$('cb').hidden=true;$('cb').textContent='💬 Chat';unread=0;ci=0;direct=0;pcs.forEach(x=>x.close());pcs=[];pend=null;paused=0;$('pz').hidden=true;const p=peer;peer=cn=null;p&&p.bc&&p.bc.close();p&&p.destroy();conns=[];S=null;started=0;bot=0;seen=0;$('ts').innerHTML='';shown='';want=new Set;PU.hidden=true;cv.style.display='none';$('clock').hidden=$('aw').hidden=false}
 function menu(){leave();show('<h2>Games</h2>'+Object.values(G).map(v=>`<button onclick="pick('${v.k}')">${v.n}</button>`).join('<br>')+'<h3>Join a lobby</h3><input id=cd placeholder=CODE maxlength=4 size=6><button onclick=join()>Join</button><br><button onclick=joinM()>Join without server</button><br><br><button onclick="P.hidden=1">Close</button>')}
 function pick(k){g=G[k];show(`<h2>${g.n}</h2><h3>How to play</h3><p class=hw>${g.how}</p><button onclick=opts()>Got it</button><br><br><button onclick=menu()>Back</button>`)}
-function opts(){show(`<h2>${g.n}</h2>`+(g.min<2?'<button onclick=go(1)>Solo</button><br>':'')+(g.ai?'<button onclick=go(2,1)>Play vs AI</button><br>':'')+(g.max>1?'<button onclick=host()>Create lobby</button><br><button onclick=hostM()>Create lobby without server</button><br>':'')+'<br><button onclick=menu()>Back</button>')}
-function lob(){const n=conns.length+1;show(`<h2>${g.n}</h2><p>${direct?'Direct lobby (no server)':'Lobby code'}</p><h1>${direct?'':code}</h1><p>Players: ${n}</p>`+(n>=g.min?'<button onclick="go(conns.length+1)">Start</button>':'<p>Waiting for players...</p>')+(direct?'<br><button onclick=addP()>Add player</button>':'')+'<br><button onclick=menu()>Leave</button>');conns.forEach(c=>c.send({l:n}))}
+function opts(){show(`<h2>${g.n}</h2>`+(g.min<2?'<button onclick=go(1)>Solo</button><br>':'')+(g.ai?'<button onclick=go(2,1)>Play vs AI</button><br>':'')+(g.k=='flappy'?'':'<button onclick=host()>Create lobby</button><br><button onclick=hostM()>Create lobby without server</button><br>')+'<br><button onclick=menu()>Back</button>')}
+function lob(){const n=conns.length+1;show(`<h2>${g.n}</h2><p>${direct?'Direct lobby (no server)':'Lobby code'}</p><h1>${direct?'':code}</h1>`+(!direct?'<button onclick=copyInvite()>Copy invite link</button>':'')+`<p>Players: ${n}</p>`+(n>=g.min?'<button onclick="go(conns.length+1)">Start</button>':'<p>Waiting for players...</p>')+(direct?'<br><button onclick=addP()>Add player</button>':'')+'<br><button onclick=menu()>Leave</button>');conns.forEach(c=>c.send({l:n}))}
 const ICE={config:{iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:global.stun.twilio.com:3478'},{urls:'turn:openrelay.metered.ca:80',username:'openrelayproject',credential:'openrelayproject'},{urls:'turn:openrelay.metered.ca:443?transport=tcp',username:'openrelayproject',credential:'openrelayproject'}]}};
 // signaling servers tried in order (default = PeerJS cloud). Add your own, e.g. {host:'my-peer.onrender.com',port:443,secure:true,path:'/'}
 const SV=window.PEERS||[{host:'craftyunknown-peer.onrender.com',port:443,secure:true,path:'/'},{},{host:'peerjs.92k.de',port:443,secure:true,path:'/'}];
@@ -596,20 +571,21 @@ function acc(c,p){c.on('open',()=>{if(started||conns.length>=g.max-1)return c.cl
  c.on('data',m=>m.rm?rem(conns.indexOf(c)+1):m.cm?chat(conns.indexOf(c)+1,m.cm):S&&g.act(S,conns.indexOf(c)+1,m));
  c.on('close',()=>{if(peer==p&&!started){conns=conns.filter(x=>x!=c);lob()}})}
 function cli(c,p){c.on('open',()=>show(`<h2>Lobby ${code}</h2><p id=n>Connected</p><button onclick=menu()>Leave</button>`));
- c.on('data',m=>{if(m.ix!=null)ci=m.ix;if(m.ch)addMsg(m.ch);if(m.l&&$('n'))$('n').textContent='Players: '+m.l+' - waiting for host';if(m.g){g=G[m.g];me=m.me;S=null;started=1;begin()}if(m.rq)ask(m.rq);if(m.rs){rst();seen=0;shown='';PU.hidden=true;if(m.s)S=m.s}if(m.s)S=m.s});
+ c.on('data',m=>{if(m.ix!=null)ci=m.ix;if(m.ch)addMsg(m.ch);if(m.l&&$('n'))$('n').textContent='Players: '+m.l+' - waiting for host';if(m.g){g=G[m.g];me=m.me;S=null;started=1;begin()}if(m.rq)ask(m.rq);if(m.rs){rst();shown='';want=new Set;hangPrompted=false;PU.hidden=true;if(m.s)S=m.s}else if(m.s)S=m.s;if(S&&g.k=='hangman'&&S.ph=='s'&&me==S.sr)wordPick()});
  c.on('close',()=>{if(peer==p){alert('Disconnected');menu()}})}
 // ---- backup signaling over ntfy.sh (HTTPS only): same 4-letter codes, used automatically when PeerJS servers are unreachable ----
 const npub=(t,o)=>fetch(NT+t,{method:'POST',body:JSON.stringify(o)}).catch(()=>{});
 async function nsub(t,fn,ab){const seen=new Set();while(!ab.signal.aborted){try{const r=await fetch(NT+t+'/json?since='+(Math.floor(Date.now()/1000)-5),{signal:ab.signal}),rd=r.body.getReader(),d=new TextDecoder();let b='';
   for(;;){const{done,value}=await rd.read();if(done)break;b+=d.decode(value,{stream:true});let i;while((i=b.indexOf('\n'))>=0){const l=b.slice(0,i);b=b.slice(i+1);try{const e=JSON.parse(l);if(e.event=='message'&&!seen.has(e.id)){seen.add(e.id);fn(JSON.parse(e.message))}}catch(x){}}}}catch(e){if(ab.signal.aborted)return}await new Promise(r=>setTimeout(r,1500))}}
 const nok=()=>fetch(NT+'v1/health',{signal:AbortSignal.timeout(8000)});
-// Lightweight site-wide presence. Browsers send a heartbeat; stale visitors expire automatically.
-const PRES='cuhub-site-presence-v1',VIS=Math.random().toString(36).slice(2)+Date.now().toString(36),visitors=new Map(),presenceAbort=new AbortController();
-const paintOnline=()=>{const now=Date.now();for(const[id,t]of visitors)if(now-t>55000)visitors.delete(id);$('onl').textContent='Online: '+visitors.size};
-const heartbeat=()=>npub(PRES,{t:'presence',id:VIS});
-nsub(PRES,m=>{if(m&&m.t==='presence'&&typeof m.id==='string'){visitors.set(m.id,Date.now());paintOnline()}},presenceAbort);
-heartbeat();setInterval(heartbeat,20000);setInterval(paintOnline,5000);
-addEventListener('pagehide',()=>presenceAbort.abort());
+
+// Approximate live visitor count shared across browsers through the public ntfy relay.
+const onlineTopic='cuhub-online-presence-v1',onlineId=Math.random().toString(36).slice(2)+Date.now().toString(36),onlineSeen=new Map(),onlineAbort=new AbortController();
+function onlineUpdate(){const now=Date.now();for(const[id,t]of onlineSeen)if(now-t>55000)onlineSeen.delete(id);$('on').textContent='Online: '+Math.max(1,onlineSeen.size)}
+function onlinePing(){onlineSeen.set(onlineId,Date.now());npub(onlineTopic,{t:'presence',id:onlineId,at:Date.now()});onlineUpdate()}
+nsub(onlineTopic,m=>{if(m&&m.t=='presence'&&typeof m.id=='string'&&m.id.length<100)onlineSeen.set(m.id,Number(m.at)||Date.now());onlineUpdate()},onlineAbort);
+onlinePing();setInterval(onlinePing,20000);setInterval(onlineUpdate,5000);
+
 async function join(cd){code=(cd||$('cd').value).trim().toUpperCase();leave();const my=jn;wait('Connecting...','Checking this device for lobby '+code+'...');
  if(await jl()||jn!=my)return;
  const J=peer={a:'connecting...',b:'checking...',ab:new AbortController(),destroy(){J.ab.abort();J.pj&&J.pj.destroy();pcs.forEach(x=>x.close())}};
@@ -648,11 +624,12 @@ async function jgo(){let o;try{o=await dec($('oc').value)}catch(e){return alert(
  show('<h2>Connecting...</h2><p>Creating reply code...</p>');await pc.setRemoteDescription({type:'offer',sdp:o.s});await pc.setLocalDescription(await pc.createAnswer());await gathered(pc);const t=await enc({s:pc.localDescription.sdp});
  show(`<h2>Reply code</h2><p class=hw>Send this code back to the host, then wait for them to connect.</p>${box('oc',1)}${cp}<br><button onclick=menu()>Cancel</button>`);$('oc').value=t}
 function go(n,b){started=1;bot=b;np=n;S=g.init(n,b);me=0;conns.forEach((c,i)=>c.send({g:g.k,me:i+1}));begin()}
-function begin(){rst();seen=0;P.hidden=true;cv.style.display='block';$('clock').hidden=$('aw').hidden=true;$('pz').hidden=!solo();if(!cn)loop();if(g.k=='hangman'&&S&&S.ph=='s'&&me==S.sr)setTimeout(wordPick,80)}
+function begin(){rst();seen=0;hangPrompted=false;P.hidden=true;cv.style.display='block';$('clock').hidden=$('aw').hidden=true;$('pz').hidden=!solo();$('lv').hidden=solo();if(S&&g.k=='hangman'&&S.ph=='s'&&me==S.sr)wordPick();if(!cn)loop()}
 function loop(){iv=setInterval(()=>{if(bot){const a=S.u??S.t;if(g.mv)g.ai(S);else if(a!=1)bt=0;else if((bt+=1/30)>.9){bt=0;g.ai(S)}}g.tick&&g.tick(S,1/30);conns.forEach(c=>c.send({s:S}))},33)}
 
 // input
 onkeydown=onkeyup=e=>{if(e.target.matches&&e.target.matches('input,textarea'))return;if(!S||cv.style.display!='block'||e.repeat)return;if(e.key=='Escape'){e.type=='keydown'&&pause();return}send({k:e.key.replace(/^.$/,x=>x.toLowerCase()),d:+(e.type=='keydown')});if(e.key[0]=='A'||e.key==' ')e.preventDefault()};
 onblur=()=>{if(S&&cv.style.display=='block')['ArrowLeft','ArrowRight','ArrowDown','ArrowUp','a','d','s','w'].forEach(k=>send({k,d:0}))};
-cv.onpointerdown=cv.onpointermove=cv.onpointerup=e=>{if(!S||(e.type=='pointermove'&&!g.mv))return;if(e.type=='pointerdown'&&g.pr){const q=g.pr(S,me);if(q){wordPick();return}}const r=cv.getBoundingClientRect();send({x:(e.clientX-r.left)/r.width,y:(e.clientY-r.top)/r.height,d:e.type=='pointerdown'?1:e.type=='pointerup'?0:2})};
+cv.onpointerdown=cv.onpointermove=cv.onpointerup=e=>{if(!S||(e.type=='pointermove'&&!g.mv))return;if(e.type=='pointerdown'&&g.k=='hangman'&&S.ph=='s'&&me==S.sr){wordPick();return}const r=cv.getBoundingClientRect();send({x:(e.clientX-r.left)/r.width,y:(e.clientY-r.top)/r.height,d:e.type=='pointerdown'?1:e.type=='pointerup'?0:2})};
+if(location.hash.startsWith('#join=')){const invite=decodeURIComponent(location.hash.slice(6)).trim();if(/^[A-Z0-9]{4}$/.test(invite))setTimeout(()=>join(invite),500)}
 </script></body></html>
